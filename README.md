@@ -36,8 +36,8 @@ yarn start copy-promotion-codes 'path/to/coupons.csv' 'path/to/promotion-codes.c
 
 #### 3. Copy customers
 
-# Please get in touch and follow the instructions at:
-# https://stripe.com/docs/account/data-migrations/pan-copy
+# - Follow the instructions at: https://stripe.com/docs/account/data-migrations/pan-copy
+# - Ensure that you provide clear instructions to Stripe to maintain the original customer IDs.
 
 
 #### 4. Copy subscriptions
