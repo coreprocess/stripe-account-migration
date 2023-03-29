@@ -21,6 +21,10 @@ yarn build
 
 #### 2. Copy products, prices and coupons
 
+# The subsequent commands generate new IDs within the target account.
+# The resulting CSV files supply an ID mapping from the source to the target account.
+# Utilize these tables to modify your application accordingly, if required.
+
 # copy products
 yarn start copy-products 'path/to/products.csv' SOURCE_API_KEY TARGET_API_KEY
 
@@ -44,6 +48,10 @@ yarn start copy-promotion-codes 'path/to/coupons.csv' 'path/to/promotion-codes.c
 
 # set default payment method of customer when it is not assigned yet
 yarn start set-default-payment-method TARGET_API_KEY
+
+# The subsequent command generates new IDs within the target account.
+# The resulting CSV file supplies an ID mapping from the source to the target account.
+# Utilize this table to modify your application accordingly, if required.
 
 # copy subscriptions to new account and cancel subscriptions in old account
 yarn start copy-subscriptions 'path/to/prices.csv' 'path/to/subscriptions.csv' true SOURCE_API_KEY TARGET_API_KEY
