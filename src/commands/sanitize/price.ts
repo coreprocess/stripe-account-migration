@@ -21,6 +21,18 @@ export function sanitizePrice(
     delete data[key];
   });
 
+  for (const tier of data["tiers"] || []) {
+    delete (tier as any)["flat_amount_decimal"];
+    delete (tier as any)["unit_amount_decimal"];
+    if (tier.up_to === undefined) {
+      (tier as any).up_to = "inf";
+    }
+  }
+
+  if (data["currency_options"]) {
+    delete data["currency_options"][data.currency];
+  }
+
   data["product"] = newProductId;
 
   return data;
