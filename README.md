@@ -57,3 +57,25 @@ yarn start set-default-payment-method TARGET_API_KEY
 yarn start copy-subscriptions 'path/to/prices.csv' 'path/to/subscriptions.csv' true SOURCE_API_KEY TARGET_API_KEY
 
 ```
+
+## Subscription Migration
+
+The `yarn start copy-subscriptions ...` command iterates over all active subscriptions of the source account. 'Active' includes also subscriptions that are canceled at the end of the current billing period. For each subscription, it does the following individually:
+
+1.  It checks if `metadata.migration_destination_id` is set. If that is the case, it assumes the subscription has already been migrated and skips the subscription.
+
+2.  It checks whether the customer exists in the destination account. If that is not the case, the subscription is skipped.
+
+3.  It then creates a new matching subscription in the destination account. Please note:
+
+    a. It creates a subscription with a trial period that covers the billing period already paid for in the old account. For example, if you copy on April 5th and the current billing period ends on April 15th, it creates a subscription with a free trial period from April 5th to April 15th. The first billing period starts on April 15th, matching the end of the current billing period in the old account.
+
+    b. If you pass `true` as the third parameter, as shown in the "Getting started" section above, it will first attempt to create the subscription with activated automatic tax calculation. If that fails due to insufficient location information for the customer, it will then create the subscription with automatic tax disabled and display a warning message.
+
+4.  It will now set the new subscription ID to `metadata.migration_destination_id` in the old account to indicate that the subscription has been copied.
+
+5.  It will then mark the subscription for cancellation at the end of the billing period in the old account.
+
+If the script stops because of an error, you can simply run it again to continue with the migration after the error is resolved. Just pass a new path to the subscription.csv, so you do not lose the previously created subscription mapping. For example, use subscription1.csv, subscription2.csv, and so on.
+
+Please be aware that while the customer IDs remain the same, the subscription IDs, as well as the product and prices, have changed. You need to update your application configuration according to the generateed mapping tables if you depend on these IDs.
