@@ -33,6 +33,10 @@ export function sanitizePrice(
     delete data["currency_options"][data.currency];
   }
 
+  if (data['custom_unit_amount']) {
+    (data['custom_unit_amount'] as any)['enabled'] = true;
+  }
+
   data["product"] = newProductId;
 
   return data;
