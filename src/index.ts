@@ -7,6 +7,7 @@ import { copyPromotionCodes } from "./commands/copy-promotion-codes";
 import { copySubscriptions } from "./commands/copy-subscriptions";
 import { getPaymentMethods } from "./commands/get-payment-methods";
 import { hasApiSubscriptionWriteAccess } from "./commands/has-api-subscription-write-access";
+import { pauseAllSubscriptions } from "./commands/pause-all-subscriptions";
 import { setDefaultPaymentMethod } from "./commands/set-default-payment-method";
 import { verifyAccount } from "./commands/verify-account";
 
@@ -37,6 +38,8 @@ async function main(action: string, args: string[]) {
     await setDefaultPaymentMethod(args[0]);
   } else if (action === "cancel-all-subscriptions") {
     await cancelAllSubscriptions(args[0]);
+  } else if (action === "pause-all-subscriptions") {
+    await pauseAllSubscriptions(args[0]);
   } else {
     throw new Error("Unknown command");
   }
