@@ -15,12 +15,18 @@ export function sanitizeSubscription(
   }
 
   // update price ids
-  const items: { price: string }[] = [];
+  const items: {
+    price: string,
+    quantity: number | undefined,
+  }[] = [];
   oldSubscription.items.data.forEach((item) => {
-    const price = prices.get(item.price.id);
+    const priceId = prices.get(item.price.id);
 
-    if (!price) throw Error("price_id does not exist");
-    items.push({ price });
+    if (!priceId) throw Error("price_id does not exist");
+    items.push({
+      price: priceId,
+      quantity: item.quantity,
+    });
   });
 
   if (typeof oldSubscription.customer !== "string") {
