@@ -10,6 +10,7 @@ import { hasApiSubscriptionWriteAccess } from "./commands/has-api-subscription-w
 import { pauseAllSubscriptions } from "./commands/pause-all-subscriptions";
 import { setDefaultPaymentMethod } from "./commands/set-default-payment-method";
 import { verifyAccount } from "./commands/verify-account";
+import { applyCustomerCoupons } from "./commands/apply-customer-coupons";
 
 async function main(action: string, args: string[]) {
   if (action === "verify-account") {
@@ -40,6 +41,8 @@ async function main(action: string, args: string[]) {
     await cancelAllSubscriptions(args[0]);
   } else if (action === "pause-all-subscriptions") {
     await pauseAllSubscriptions(args[0]);
+  } else if (action === "apply-customer-coupons") {
+    await applyCustomerCoupons(args[0], args[1], args[2]);
   } else {
     throw new Error("Unknown command");
   }
