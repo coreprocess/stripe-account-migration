@@ -46,6 +46,9 @@ yarn start copy-promotion-codes 'path/to/coupons.csv' 'path/to/promotion-codes.c
 
 #### 4. Copy subscriptions
 
+# apply discount coupons to customers
+yarn start apply-customer-coupons 'path/to/coupons.csv' SOURCE_API_KEY TARGET_API_KEY
+
 # set default payment method of customer when it is not assigned yet
 yarn start set-default-payment-method TARGET_API_KEY
 
