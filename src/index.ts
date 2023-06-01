@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { cancelAllSubscriptions } from "./commands/cancel-all-subscriptions";
 import { copyCoupons } from "./commands/copy-coupons";
+import { checkPrices } from "./commands/check-prices";
 import { copyPrices } from "./commands/copy-prices";
 import { copyProducts } from "./commands/copy-products";
 import { copyPromotionCodes } from "./commands/copy-promotion-codes";
@@ -17,6 +18,8 @@ async function main(action: string, args: string[]) {
     await verifyAccount(args[0]);
   } else if (action === "copy-products") {
     await copyProducts(args[0], args[1], args[2]);
+  } else if (action === "check-prices") {
+    await checkPrices(args[0], args[1], args[2], args[3]);
   } else if (action === "copy-prices") {
     await copyPrices(args[0], args[1], args[2], args[3]);
   } else if (action === "copy-coupons") {
@@ -33,7 +36,8 @@ async function main(action: string, args: string[]) {
       args[1],
       args[2] === "true" ? true : false,
       args[3],
-      args[4]
+      args[4],
+      args[5],
     );
   } else if (action === "set-default-payment-method") {
     await setDefaultPaymentMethod(args[0]);

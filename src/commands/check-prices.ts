@@ -3,7 +3,7 @@ import { csvStringToMap, mapToCsvString } from "../core/csv";
 import { createStripeClient } from "../core/stripe";
 import { sanitizePrice } from "./sanitize/price";
 
-export async function copyPrices(
+export async function checkPrices(
   productsFilePath: string,
   pricesFilePath: string,
   apiKeyOldAccount: string,
@@ -23,29 +23,22 @@ export async function copyPrices(
     })
     .autoPagingEach(async (oldPrice) => {
       console.log('Processing price: ', oldPrice.id);
-      const newProductId = products.get(oldPrice.product as string);
 
-      if (!newProductId) throw Error("No matching new product_id");
-
-      const newPrice = await createStripeClient(apiKeyNewAccount).prices.create(
-        sanitizePrice(oldPrice, newProductId)
-      );
-
-      keyMap.set(oldPrice.id, newPrice.id);
-
-      // update default price
-      const oldProduct = await createStripeClient(
-        apiKeyOldAccount
-      ).products.retrieve(oldPrice.product as string);
-
-      if (oldProduct.default_price === oldPrice.id) {
-        await createStripeClient(apiKeyNewAccount).products.update(
-          newProductId,
-          {
-            default_price: newPrice.id,
+      // check all tiers have amount:
+      if (oldPrice.tiers) {
+        oldPrice.tiers.forEach((tier) => {
+          if (tier.unit_amount === undefined || tier.unit_amount === null) {
+            console.log('----------------');
+            console.log(tier);
+            console.log("tier.unit_amount is missing ########################################################################");
           }
-        );
+        });
       }
+
+      console.log('SANITIZING..................');
+      const x = sanitizePrice(oldPrice, "productIdPlaceholder");
+      console.log('Sanitized:', x);
+
 
     });
 
@@ -57,3 +50,4 @@ export async function copyPrices(
   console.log('---------------------------');
   await fs.writeFile(pricesFilePath, output);
 }
+

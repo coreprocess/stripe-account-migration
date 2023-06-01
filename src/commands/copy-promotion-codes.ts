@@ -19,7 +19,13 @@ export async function copyPromotionCodes(
   await createStripeClient(apiKeyOldAccount)
     .promotionCodes.list({ limit: 100 })
     .autoPagingEach(async (oldPromotionCode) => {
+
+      console.log('---------------------------------------------------');
+      console.log('Processing promotion code:', oldPromotionCode);
       const newCouponId = coupons.get(oldPromotionCode.coupon.id as string);
+
+      console.log('COUPON >>>>>>>>>>>>>>>>>');
+      console.log(oldPromotionCode.coupon, newCouponId);
 
       if (!newCouponId) {
         console.error("No matching new coupon_id");

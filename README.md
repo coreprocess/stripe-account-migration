@@ -57,7 +57,7 @@ yarn start set-default-payment-method TARGET_API_KEY
 # Utilize this table to modify your application accordingly, if required.
 
 # copy subscriptions to new account and cancel subscriptions in old account
-yarn start copy-subscriptions 'path/to/prices.csv' 'path/to/subscriptions.csv' true SOURCE_API_KEY TARGET_API_KEY
+yarn start copy-subscriptions 'path/to/prices.csv' 'path/to/subscriptions.csv' true 'path/to/coupons.csv' SOURCE_API_KEY TARGET_API_KEY
 
 ```
 

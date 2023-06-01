@@ -22,8 +22,27 @@ export function sanitizePrice(
   });
 
   for (const tier of data["tiers"] || []) {
-    delete (tier as any)["flat_amount_decimal"];
-    delete (tier as any)["unit_amount_decimal"];
+    const hasUnitAmountDecimal = tier.unit_amount_decimal !== undefined;
+    const hasUnitAmount = tier.unit_amount !== undefined;
+    const hasFlatAmountDecimal = tier.flat_amount_decimal !== undefined;
+    const hasFlatAmount = tier.flat_amount !== undefined;
+
+    if (!hasUnitAmountDecimal && hasUnitAmount) {
+      console.log("Using: unit_amount");
+      delete (tier as any)["unit_amount_decimal"];
+    } else {
+      console.log("Using: unit_amount_decimal");
+      delete (tier as any)["unit_amount"];
+    }
+
+    if (!hasFlatAmountDecimal && hasFlatAmount) {
+      console.log("Using: flat_amount");
+      delete (tier as any)["flat_amount_decimal"];
+    } else {
+      console.log("Using: flat_amount_decimal");
+      delete (tier as any)["flat_amount"];
+    }
+
     if (tier.up_to === undefined) {
       (tier as any).up_to = "inf";
     }

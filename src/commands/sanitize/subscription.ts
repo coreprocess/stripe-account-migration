@@ -3,7 +3,8 @@ import Stripe from "stripe";
 export function sanitizeSubscription(
   oldSubscription: Stripe.Subscription,
   prices: Map<string, string>,
-  automaticTax: boolean
+  automaticTax: boolean,
+  couponId: string
 ): Stripe.SubscriptionCreateParams {
   // set trial period
   let trialEnd = oldSubscription.current_period_end;
@@ -36,6 +37,9 @@ export function sanitizeSubscription(
   return {
     customer: oldSubscription.customer,
     items,
+    coupon: couponId
+      ? couponId
+      : undefined,
     currency: oldSubscription.currency,
     description: oldSubscription.description
       ? oldSubscription.description
