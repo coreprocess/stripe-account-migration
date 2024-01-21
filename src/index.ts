@@ -31,9 +31,11 @@ async function main(action: string, args: string[]) {
     await copySubscriptions(
       args[0],
       args[1],
-      args[2] === "true" ? true : false,
+      args[2],
       args[3],
-      args[4]
+      args[4] === "true" ? true : false,
+      args[5],
+      args[6]
     );
   } else if (action === "set-default-payment-method") {
     await setDefaultPaymentMethod(args[0]);

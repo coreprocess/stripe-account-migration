@@ -1,10 +1,14 @@
 import Stripe from "stripe";
 
-export function sanitizeSubscription(
-  oldSubscription: Stripe.Subscription,
-  prices: Map<string, string>,
-  automaticTax: boolean
-): Stripe.SubscriptionCreateParams {
+export function sanitizeSubscription({
+  oldSubscription,
+  prices,
+  automaticTax,
+}: {
+  oldSubscription: Stripe.Subscription;
+  prices: Map<string, string>;
+  automaticTax: boolean;
+}): Stripe.SubscriptionCreateParams {
   // set trial period
   let trialEnd = oldSubscription.current_period_end;
   if (
@@ -16,8 +20,8 @@ export function sanitizeSubscription(
 
   // update price ids
   const items: {
-    price: string,
-    quantity: number | undefined,
+    price: string;
+    quantity: number | undefined;
   }[] = [];
   oldSubscription.items.data.forEach((item) => {
     const priceId = prices.get(item.price.id);
