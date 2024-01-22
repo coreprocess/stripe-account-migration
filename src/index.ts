@@ -11,6 +11,7 @@ import { pauseAllSubscriptions } from "./commands/pause-all-subscriptions";
 import { setDefaultPaymentMethod } from "./commands/set-default-payment-method";
 import { verifyAccount } from "./commands/verify-account";
 import { applyCustomerCoupons } from "./commands/apply-customer-coupons";
+import { copySubscriptionsInlineItems } from "./commands/copy-subscriptions-inline-items";
 
 async function main(action: string, args: string[]) {
   if (action === "verify-account") {
@@ -37,6 +38,8 @@ async function main(action: string, args: string[]) {
       args[5],
       args[6]
     );
+  } else if (action === "copy-subscriptions-inline-items") {
+    await copySubscriptionsInlineItems(args[0], args[1], args[2]);
   } else if (action === "set-default-payment-method") {
     await setDefaultPaymentMethod(args[0]);
   } else if (action === "cancel-all-subscriptions") {
