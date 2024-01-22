@@ -101,8 +101,9 @@ export async function copySubscriptionsInlineItems(
 
           priceMap.set(subscriptionItem.plan.id, price.id);
 
-          console.log("Migrated price");
-          console.log({ product, price });
+          console.log(
+            `Migrated price ${subscriptionItem.price.id} -> ${price.id} for subscription ${oldSubscription.id}`
+          );
         } catch (err) {
           console.log(err);
           console.log(
@@ -116,7 +117,7 @@ export async function copySubscriptionsInlineItems(
 
       if (isCausedError) {
         try {
-          console.log(`Rolling back subscription ...`);
+          console.log(`Rolling back subscription ${oldSubscription.id}...`);
           for (const productId of productMap.values()) {
             await createStripeClient(apiKeyNewAccount).products.del(productId);
           }
