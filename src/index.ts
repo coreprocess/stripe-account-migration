@@ -32,11 +32,9 @@ async function main(action: string, args: string[]) {
     await copySubscriptions(
       args[0],
       args[1],
-      args[2],
+      args[2] === "true" ? true : false,
       args[3],
-      args[4] === "true" ? true : false,
-      args[5],
-      args[6]
+      args[4]
     );
   } else if (action === "copy-subscriptions-inline-items") {
     await copySubscriptionsInlineItems(args[0], args[1], args[2]);
