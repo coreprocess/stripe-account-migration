@@ -7,6 +7,9 @@ export async function copySubscriptionsInlineItems(
   apiKeyOldAccount: string,
   apiKeyNewAccount: string
 ) {
+  const productMap = new Map();
+  const priceMap = new Map();
+
   // https://stripe.com/docs/api/subscriptions/list
   await createStripeClient(apiKeyOldAccount)
     .subscriptions.list()
@@ -51,8 +54,6 @@ export async function copySubscriptionsInlineItems(
         return;
       }
 
-      const productMap = new Map();
-      const priceMap = new Map();
       let isCausedError = false;
 
       for (const subscriptionItem of oldSubscriptionExpanded.items.data) {

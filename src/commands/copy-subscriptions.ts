@@ -19,7 +19,7 @@ export async function copySubscriptions(
   // https://stripe.com/docs/api/subscriptions/list
   await createStripeClient(apiKeyOldAccount)
     .subscriptions.list()
-    .autoPagingEach(async (oldSubscription) => {
+    .autoPagingEach(async function (oldSubscription) {
       console.log(`Migrating subscription ${oldSubscription.id}`);
 
       // skip migrated subscriptions
@@ -89,8 +89,8 @@ export async function copySubscriptions(
       await createStripeClient(apiKeyOldAccount).subscriptions.update(
         oldSubscription.id,
         { cancel_at_period_end: true }
+        // { pause_collection: { behavior: "keep_as_draft" } }
       );
       console.log(`-> scheduled for cancellation in old account`);
     });
-
 }
