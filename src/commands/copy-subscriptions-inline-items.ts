@@ -114,7 +114,7 @@ export async function copySubscriptionsInlineItems(
         }
       }
 
-      fs.writeFile(pricesInlineFilePath, await mapToCsvString(priceMap));
+      await fs.writeFile(pricesInlineFilePath, await mapToCsvString(priceMap));
 
       if (isCausedError) {
         try {
