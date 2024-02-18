@@ -11,6 +11,8 @@ import { pauseAllSubscriptions } from "./commands/pause-all-subscriptions";
 import { setDefaultPaymentMethod } from "./commands/set-default-payment-method";
 import { verifyAccount } from "./commands/verify-account";
 import { applyCustomerCoupons } from "./commands/apply-customer-coupons";
+import { copySubscriptionsInlineItems } from "./commands/copy-subscriptions-inline-items";
+import { copyInvoices } from "./commands/copy-invoices";
 
 async function main(action: string, args: string[]) {
   if (action === "verify-account") {
@@ -27,6 +29,8 @@ async function main(action: string, args: string[]) {
     await hasApiSubscriptionWriteAccess(args[0], args[1]);
   } else if (action === "get-payment-methods") {
     await getPaymentMethods(args[0], args[1]);
+  } else if (action === "copy-invoices") {
+    await copyInvoices(args[0], args[1], args[2], args[3]);
   } else if (action === "copy-subscriptions") {
     await copySubscriptions(
       args[0],
@@ -35,6 +39,8 @@ async function main(action: string, args: string[]) {
       args[3],
       args[4]
     );
+  } else if (action === "copy-subscriptions-inline-items") {
+    await copySubscriptionsInlineItems(args[0], args[1], args[2]);
   } else if (action === "set-default-payment-method") {
     await setDefaultPaymentMethod(args[0]);
   } else if (action === "cancel-all-subscriptions") {

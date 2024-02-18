@@ -19,42 +19,54 @@ export async function copySubscriptions(
   // https://stripe.com/docs/api/subscriptions/list
   await createStripeClient(apiKeyOldAccount)
     .subscriptions.list()
-    .autoPagingEach(async (oldSubscription) => {
-
+    .autoPagingEach(async function (oldSubscription) {
       console.log(`Migrating subscription ${oldSubscription.id}`);
 
       // skip migrated subscriptions
       if (oldSubscription.metadata.migration_destination_id) {
-        console.log(`-> skipped, already migrated as ${oldSubscription.metadata.migration_destination_id}`);
+        console.log(
+          `-> skipped, already migrated as ${oldSubscription.metadata.migration_destination_id}`
+        );
         return;
       }
 
       // check if customer id exists in destination account
       try {
-        await createStripeClient(apiKeyNewAccount).customers.retrieve(oldSubscription.customer as string);
-      }
-      catch (err: any) {
+        await createStripeClient(apiKeyNewAccount).customers.retrieve(
+          oldSubscription.customer as string
+        );
+      } catch (err: any) {
         // propagate error if it's not a customer missing error
-        if(err?.code !== 'resource_missing') {
+        if (err?.code !== "resource_missing") {
           throw err;
         }
         // skip subscription if customer is missing
-        console.log(`-> skipped, customer ${oldSubscription.customer} is missing in destination account`);
+        console.log(
+          `-> skipped, customer ${oldSubscription.customer} is missing in destination account`
+        );
         return;
       }
 
       // copy subscription
       const newSubscription = await createStripeClient(apiKeyNewAccount)
-          .subscriptions.create(sanitizeSubscription(oldSubscription, prices, automaticTax))
-          .catch((err: any) => {
-              if (err?.code !== 'customer_tax_location_invalid') {
-                  throw err;
-              }
-              console.log(`-> WARNING: disable tax automation for customer ${oldSubscription.customer}`);
-              return createStripeClient(apiKeyNewAccount).subscriptions.create(
-                  sanitizeSubscription(oldSubscription, prices, false)
-              );
-          });
+        .subscriptions.create(
+          sanitizeSubscription({ oldSubscription, prices, automaticTax })
+        )
+        .catch((err: any) => {
+          if (err?.code !== "customer_tax_location_invalid") {
+            throw err;
+          }
+          console.log(
+            `-> WARNING: disable tax automation for customer ${oldSubscription.customer}`
+          );
+          return createStripeClient(apiKeyNewAccount).subscriptions.create(
+            sanitizeSubscription({
+              oldSubscription,
+              prices,
+              automaticTax: false,
+            })
+          );
+        });
 
       // update mapping (we write it multiple times to ensure we don't lose data when an error occurs)
       keyMap.set(oldSubscription.id, newSubscription.id);
@@ -64,15 +76,21 @@ export async function copySubscriptions(
       // mark subscription as migrated
       await createStripeClient(apiKeyOldAccount).subscriptions.update(
         oldSubscription.id,
-        { metadata: { migration_destination_id: newSubscription.id } }
+        {
+          metadata: {
+            // Prevents loosing of old metadata
+            ...oldSubscription.metadata,
+            migration_destination_id: newSubscription.id,
+          },
+        }
       );
 
       // cancel subscription in old account
       await createStripeClient(apiKeyOldAccount).subscriptions.update(
         oldSubscription.id,
         { cancel_at_period_end: true }
+        // { pause_collection: { behavior: "keep_as_draft" } }
       );
       console.log(`-> scheduled for cancellation in old account`);
     });
-
 }
